@@ -1,0 +1,15 @@
+
+# Install prefix
+PREFIX=/opt/cross
+
+# GNU arch name
+TARGET_ARCH=aarch64-linux
+
+# linux arch name
+LINUX_ARCH=arm64
+
+# Where stuff is downloaded and built from
+WORK_DIR=workdir
+
+# Tools files, lists all the packages needed
+TOOLS_FILE=$(pwd)/tools
