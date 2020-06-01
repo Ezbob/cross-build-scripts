@@ -67,8 +67,6 @@ sleep 3
 
 echo "Building Binutils.."
 
-BINUTILS_OPTS=${BINUTILS_OPTS:-"--disable-multilib"}
-
 mkdir -p build-binutils
 cd build-binutils
 ../binutils-*/configure --prefix=$PREFIX --target=${TARGET_ARCH} ${BINUTILS_OPTS}
@@ -85,8 +83,6 @@ echo "Installed Linux headers."
 
 echo "Installing GCC cross compiler.."
 
-GCC_OPTS=${GCC_OPTS:-"--disable-multilib"}
-
 mkdir -p build-gcc
 cd build-gcc
 ../gcc-*/configure --prefix=${PREFIX} --target=${TARGET_ARCH} --enable-languages=c,c++ ${GCC_OPTS}
@@ -97,11 +93,9 @@ echo "Installed GCC cross compiler."
 
 echo "Installing standard C headers and startup files.."
 
-STD_LIB_OPTS=${STD_LIB_OPTS:-"--disable-multilib"}
-
 mkdir -p build-glibc
 cd build-glibc
-../glibc-*/configure --prefix=${IMAGE_PREFIX} --build=$MACHTYPE --host=${TARGET_ARCH} --target=${TARGET_ARCH} --with-headers=${IMAGE_PREFIX}/include ${STD_LIB_OPTS} libc_cv_forced_unwind=yes &&
+../glibc-*/configure --prefix=${IMAGE_PREFIX} --build=$MACHTYPE --host=${TARGET_ARCH} --target=${TARGET_ARCH} --with-headers=${IMAGE_PREFIX}/include ${GLIBC_OPTS} libc_cv_forced_unwind=yes &&
 make install-bootstrap-headers=yes install-headers && make -j4 csu/subdir_lib || die "Could not standard C headers and startup files"
 install csu/crt1.o csu/crti.o csu/crtn.o ${IMAGE_PREFIX}/lib
 ${TARGET_ARCH}-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o ${IMAGE_PREFIX}/lib/libc.so || die "Could not create startup files"
