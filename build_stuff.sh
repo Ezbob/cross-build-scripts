@@ -170,7 +170,7 @@ echo "Installing standard C library"
 
 if is_stage_not_built "std-c-lib"; then
     cd build-glibc
-    make -j4 && make install || die "Could not install standard C library"
+    make CFLAGS="${GLIBC_CFLAGS}" -j4 && make install || die "Could not install standard C library"
     cd ..
     echo "Installed standard C library"
     commit_stage "std-c-lib"
