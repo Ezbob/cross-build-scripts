@@ -1,6 +1,6 @@
 
 # Install prefix
-PREFIX=/opt/cross
+PREFIX=$(pwd)/cross-aarch64
 
 # GNU arch name
 TARGET_ARCH=aarch64-unknown-linux-gnu
