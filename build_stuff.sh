@@ -46,7 +46,7 @@ ENV_SCRIPT="cross_environment.source"
 
 echo "Creating environment script ${ENV_SCRIPT}.."
 
-echo 'export PATH='${BIN_PREFIX}':$PATH' >> ${ENV_SCRIPT}
+echo 'export PATH='${BIN_PREFIX}':$PATH' > ${ENV_SCRIPT}
 echo 'export CROSS_PREFIX='${PREFIX} >> ${ENV_SCRIPT}
 echo 'export CROSS_ARCH='${TARGET_ARCH} >> ${ENV_SCRIPT}
 
