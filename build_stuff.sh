@@ -78,7 +78,20 @@ while read line; do
     fi
 done < ${TOOLS_FILE}
 
+echo "Running build stages..."
 touch .buildstages
+
+echo "Applying patches.."
+if is_stage_not_built "applying-patches"; then
+    for patch_file in $CWD/patch-*.sh; do
+        if [ -x $patch_file ]; then
+            $patch_file
+        fi
+    done
+    commit_stage "applying-patches"
+else
+    echo "Patches already applied"
+fi
 
 if is_stage_not_built "gcc-links"; then
     echo "Setting up GCC dependecies links..."
@@ -92,9 +105,6 @@ if is_stage_not_built "gcc-links"; then
     echo "done."
     commit_stage "gcc-links"
 fi
-
-echo "Building process next... "
-sleep 3
 
 echo "Building Binutils.."
 
