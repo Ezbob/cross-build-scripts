@@ -57,8 +57,8 @@ echo "Created environment script ${ENV_SCRIPT}."
 mkdir -p ${WORK_DIR}
 cd ${WORK_DIR}
 
+# This stage downloads the dependencies found in the 'tools' file
 touch .downloaded
-
 while read line; do
     name=$(echo $line | tr -s ' ' | cut -d ' ' -f 1) 
     url=$(echo $line | tr -s ' ' | cut -d ' ' -f 2)
@@ -81,6 +81,8 @@ done < ${TOOLS_FILE}
 echo "Running build stages..."
 touch .buildstages
 
+# This stage applies any patch scripts that are present in the current
+# working directory
 echo "Applying patches.."
 if is_stage_not_built "applying-patches"; then
     for patch_file in $CWD/patch-*.sh; do
@@ -93,6 +95,8 @@ else
     echo "Patches already applied"
 fi
 
+# this stage sets up the links to the GCC dependencies that was downloaded
+# in a previous step
 if is_stage_not_built "gcc-links"; then
     echo "Setting up GCC dependecies links..."
     cd gcc-*
@@ -108,6 +112,8 @@ fi
 
 echo "Building Binutils.."
 
+# This stage builds GNU Binutils which are the programs for manipulating the 
+# binary object files created by the compiler (linker ld, assembler as, and more..)
 if is_stage_not_built "built-binutils"; then
     mkdir -p build-binutils
     cd build-binutils
@@ -123,10 +129,11 @@ fi
 
 echo "Installing Linux headers.."
 
+# The compiler needs to know how to handle system calls to the Linux kernel so
+# it needs the headers of some version of the Linux kernel to do this. This stage
+# installs the relevant headers in the install prefix.
 if is_stage_not_built "install-linux-headers"; then
-    cd linux-*
-    make ARCH=${LINUX_ARCH} INSTALL_HDR_PATH=${IMAGE_PREFIX} headers_install || die "Could not install linux headers"
-    cd ..
+    make -C linux-* ARCH=${LINUX_ARCH} INSTALL_HDR_PATH=${IMAGE_PREFIX} headers_install || die "Could not install linux headers"
     echo "Installed Linux headers."
     commit_stage "install-linux-headers"
 else
@@ -135,6 +142,8 @@ fi
 
 echo "Installing GCC cross compiler.."
 
+# This stage compiles the actual cross compiler, so it can be used to compile
+# the standard libraries (C and C++) in a later stage.
 if is_stage_not_built "cross-compiler"; then
     mkdir -p build-gcc
     cd build-gcc
@@ -149,6 +158,9 @@ fi
 
 echo "Installing standard C headers and startup files.."
 
+# This stage configures the glibc sources, creates and install glibc headers,
+# and builds and install the crt files which are C RunTime files (basically, the
+# C code that initialize a main-function in a C program)
 if is_stage_not_built "std-c-headers-and-runtime"; then
     mkdir -p build-glibc
     cd build-glibc
@@ -166,10 +178,10 @@ fi
 
 echo "Installing compiler support library.."
 
+# This stage builds support libraries for the cross-compiler. These libraries 
+# contain C++ exeception handler code amoungst other this. 
 if is_stage_not_built "compiler-support-lib"; then
-    cd build-gcc
-    make -j4 all-target-libgcc && make install-target-libgcc || die "Could not install compiler support library"
-    cd ..
+    make -C build-gcc -j4 all-target-libgcc && make -C build-gcc install-target-libgcc || die "Could not install compiler support library"
     commit_stage "compiler-support-lib"
     echo "Installed compiler support library."
 else
@@ -178,10 +190,9 @@ fi
 
 echo "Installing standard C library"
 
+# Finally we build the glibc fully
 if is_stage_not_built "std-c-lib"; then
-    cd build-glibc
-    make CFLAGS="${GLIBC_CFLAGS}" -j4 && make install || die "Could not install standard C library"
-    cd ..
+    make -C build-glibc CFLAGS="${GLIBC_CFLAGS}" -j4 && make -C build-glibc install || die "Could not install standard C library"
     echo "Installed standard C library"
     commit_stage "std-c-lib"
 else
@@ -190,10 +201,9 @@ fi
 
 echo "Installing standard C++ library"
 
+# This stage builds the C++ library
 if is_stage_not_built "std-c++-lib"; then
-    cd build-gcc
-    make -j4 && make install || die "Could not install standard C++ library"
-    cd ..
+    make -C build-gcc -j4 && make -C build-gcc install || die "Could not install standard C++ library"
     echo "Installed standard C++ library."
     commit_stage "std-c++-lib"
 else
