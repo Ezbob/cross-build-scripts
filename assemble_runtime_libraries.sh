@@ -37,10 +37,10 @@ pack_libraries() {
 
 OLD_DIR=$(pwd)
 OUTPUT=libraries.tgz
-TAR_DIR=/tmp/.tarred
+TAR_DIR=/tmp/.tarred-$RANDOM
 
 make_resources
-#trap unmake_resources EXIT
+trap unmake_resources EXIT
 
 . ./variables
 
