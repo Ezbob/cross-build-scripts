@@ -1,4 +1,4 @@
-binutils http://ftpmirror.gnu.org/binutils/binutils-2.31.tar.gz
+binutils http://ftpmirror.gnu.org/binutils/binutils-2.34.tar.gz
 gcc      http://ftpmirror.gnu.org/gcc/gcc-10.1.0/gcc-10.1.0.tar.gz
 linux    https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.10.tar.xz
 glibc    http://ftpmirror.gnu.org/glibc/glibc-2.31.tar.xz
