@@ -95,7 +95,7 @@ if is_stage_not_built "applying-patches"; then
     cd $CWD
     for patch_file in patch-*.sh; do
         if [ -x $patch_file ]; then
-            $patch_file
+            ./$patch_file || die "Could not apply post-download patch '${patch_file}'"
         fi
     done
     cd ${WORK_DIR}
@@ -229,7 +229,7 @@ if is_stage_not_built "applying-post-patches"; then
     cd $CWD
     for patch_file in post-patch-*.sh; do
         if [ -x $patch_file ]; then
-            $patch_file
+            ./$patch_file || die "Could not apply post-build patch '${patch_file}'"
         fi
     done
     cd $WORK_DIR
