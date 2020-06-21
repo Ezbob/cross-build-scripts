@@ -18,7 +18,7 @@ TOOLS_FILE=$(pwd)/tools
 BINUTILS_OPTS="--disable-multilib"
 
 # gcc configure options
-GCC_OPTS="--disable-multilib"
+GCC_OPTS="--disable-multilib --enable-languages=c,c++"
 
 # glibc configure options
 GLIBC_OPTS="--disable-multilib"

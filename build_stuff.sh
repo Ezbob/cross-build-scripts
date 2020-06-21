@@ -92,6 +92,7 @@ touch .buildstages
 # working directory
 echo "Applying post-download patches.."
 if is_stage_not_built "applying-patches"; then
+    print_title "Post-download patches"
     cd $CWD
     for patch_file in patch-*.sh; do
         if [ -x $patch_file ]; then
@@ -107,6 +108,7 @@ fi
 # this stage sets up the links to the GCC dependencies that was downloaded
 # in a previous step
 if is_stage_not_built "gcc-links"; then
+    print_title "GCC dependencies links"
     echo "Setting up GCC dependecies links..."
     cd gcc-*
     ln -s ../mpfr-* mpfr
@@ -119,13 +121,12 @@ if is_stage_not_built "gcc-links"; then
     commit_stage "gcc-links"
 fi
 
-#exit 1 # remove this
-
 echo "Building Binutils.."
 
 # This stage builds GNU Binutils which are the programs for manipulating the 
 # binary object files created by the compiler (linker ld, assembler as, and more..)
 if is_stage_not_built "built-binutils"; then
+    print_title "Building binutils"
     mkdir -p build-binutils
     cd build-binutils
     ../binutils-*/configure --prefix= --with-sysroot=$SYSROOT_PREFIX --target=${TARGET_ARCH} ${BINUTILS_OPTS} || die "Could not configure binutils"
@@ -144,6 +145,7 @@ echo "Installing Linux headers.."
 # it needs the headers of some version of the Linux kernel to do this. This stage
 # installs the relevant headers in the install prefix.
 if is_stage_not_built "install-linux-headers"; then
+    print_title "Linux headers"
     make -C linux-* ARCH=${LINUX_ARCH} INSTALL_HDR_PATH=${SYSROOT_PREFIX}/usr headers_install || die "Could not install linux headers"
     echo "Installed Linux headers."
     commit_stage "install-linux-headers"
@@ -156,9 +158,10 @@ echo "Installing GCC cross compiler.."
 # This stage compiles the actual cross compiler, so it can be used to compile
 # the standard libraries (C and C++) in a later stage.
 if is_stage_not_built "cross-compiler"; then
+    print_title "GCC stage 1"
     mkdir -p build-gcc
     cd build-gcc
-    ../gcc-*/configure --prefix= --with-sysroot=/${TARGET_ARCH}/${SYSROOT_DIR} --with-build-sysroot=${SYSROOT_PREFIX} --target=${TARGET_ARCH} --enable-languages=c,c++ ${GCC_OPTS} || die "Could not configure cross compiler"
+    ../gcc-*/configure --prefix= --with-sysroot=/${TARGET_ARCH}/${SYSROOT_DIR} --with-build-sysroot=${SYSROOT_PREFIX} --target=${TARGET_ARCH} ${GCC_OPTS} || die "Could not configure cross compiler"
     make -j4 all-gcc && make install-gcc DESTDIR=${PREFIX} || die "Could not install cross compiler"
     cd ..
     echo "Installed GCC cross compiler."
@@ -173,12 +176,13 @@ echo "Installing standard C headers and startup files.."
 # and builds and install the crt files which are C RunTime files (basically, the
 # C code that initialize a main-function in a C program)
 if is_stage_not_built "std-c-headers-and-runtime"; then
+    print_title "libc headers and C runtime"
     mkdir -p build-glibc
     cd build-glibc
     ../glibc-*/configure --prefix=/usr --with-sysroot=/${TARGET_ARCH}/${SYSROOT_DIR} --build=$MACHTYPE --host=${TARGET_ARCH} --target=${TARGET_ARCH} ${GLIBC_OPTS} libc_cv_forced_unwind=yes || die "Could not configure glibc"
     make install-bootstrap-headers=yes install-headers DESTDIR=${SYSROOT_PREFIX} || die "Could not standard C headers and startup files"
     mkdir -p ${SYSROOT_PREFIX}/usr/lib
-    make -j4 csu/subdir_lib && install csu/crt1.o csu/crti.o csu/crtn.o ${SYSROOT_PREFIX}/usr/lib || die "Could install C Runtime files"
+    make -j4 csu/subdir_lib && install csu/crt1.o csu/crti.o csu/crtn.o ${SYSROOT_PREFIX}/usr/lib || die "Could not install C Runtime files"
     ${TARGET_ARCH}-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o ${SYSROOT_PREFIX}/usr/lib/libc.so || die "Could not create startup files"
     touch ${SYSROOT_PREFIX}/usr/include/gnu/stubs.h
     cd ..
@@ -193,7 +197,9 @@ echo "Installing compiler support library.."
 # This stage builds support libraries for the cross-compiler. These libraries 
 # contain C++ exeception handler code amoungst other this. 
 if is_stage_not_built "compiler-support-lib"; then
-    make -C build-gcc -j4 all-target-libgcc && make -C build-gcc install-target-libgcc DESTDIR=${PREFIX} || die "Could not install compiler support library"
+    print_title "Libgcc"
+    make -C build-gcc -j4 all-target-libgcc || die "Could not compile libgcc" 
+    make -C build-gcc install-target-libgcc DESTDIR=${PREFIX} || die "Could not install libgcc"
     commit_stage "compiler-support-lib"
     echo "Installed compiler support library."
 else
@@ -204,7 +210,9 @@ echo "Installing standard C library"
 
 # Finally we build the glibc fully
 if is_stage_not_built "std-c-lib"; then
-    make -C build-glibc CFLAGS="${GLIBC_CFLAGS}" -j4 && make -C build-glibc install DESTDIR=${SYSROOT_PREFIX} || die "Could not install standard C library"
+    print_title "Glibc"
+    make -C build-glibc CFLAGS="${GLIBC_CFLAGS}" -j4 || die "Could not build glibc" 
+    make -C build-glibc install DESTDIR=${SYSROOT_PREFIX} || die "Could not install standard C library"
     echo "Installed standard C library"
     commit_stage "std-c-lib"
 else
@@ -215,7 +223,9 @@ echo "Installing standard C++ library"
 
 # This stage builds the C++ library
 if is_stage_not_built "std-c++-lib"; then
-    make -C build-gcc -j4 && make -C build-gcc install DESTDIR=${PREFIX} || die "Could not install standard C++ library"
+    print_title "GCC stage 2 (final)"
+    make -C build-gcc -j4 || die "Could not build GCC stage 2"
+    make -C build-gcc install DESTDIR=${PREFIX} || die "Could not install standard C++ library"
     echo "Installed standard C++ library."
     commit_stage "std-c++-lib"
 else
@@ -226,6 +236,7 @@ fi
 # working directory
 echo "Applying post-build patches.."
 if is_stage_not_built "applying-post-patches"; then
+    print_title "Post-build patches"
     cd $CWD
     for patch_file in post-patch-*.sh; do
         if [ -x $patch_file ]; then

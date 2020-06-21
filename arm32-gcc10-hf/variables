@@ -18,7 +18,7 @@ TOOLS_FILE=$(pwd)/tools
 BINUTILS_OPTS="--disable-multilib"
 
 # gcc configure options
-GCC_OPTS="--disable-multilib --with-arch=armv7-a+nosimd+vfpv4-d16 --with-float=hard --with-fpu=vfpv4-d16"
+GCC_OPTS="--disable-multilib --enable-languages=c,c++ --with-arch=armv7-a+nosimd+vfpv4-d16 --with-float=hard --with-fpu=vfpv4-d16"
 
 # glibc configure options
 GLIBC_OPTS="--disable-multilib"
