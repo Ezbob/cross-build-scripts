@@ -130,7 +130,9 @@ if is_stage_not_built "built-binutils"; then
     mkdir -p build-binutils
     cd build-binutils
     ../binutils-*/configure --prefix= --with-sysroot=$SYSROOT_PREFIX --target=${TARGET_ARCH} ${BINUTILS_OPTS} || die "Could not configure binutils"
-    make -j4 && make install DESTDIR=${PREFIX} || die "Binutils build failed"
+    make configure-host || die "configure host"
+    make LDFLAGS="-all-static" -j4 || die "building binutils"
+    make install-strip DESTDIR=${PREFIX} || die "Binutils build failed"
     cd ..
     
     commit_stage "built-binutils"
@@ -138,6 +140,7 @@ if is_stage_not_built "built-binutils"; then
 else
     echo "Already built binutils"
 fi
+
 
 echo "Installing Linux headers.."
 
