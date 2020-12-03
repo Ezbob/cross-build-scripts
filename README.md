@@ -3,6 +3,9 @@
 This repo contains scripts and tools to build a cross-compiler toolchain using
 glibc, gnu binutils, and gcc.
 
+It's all hacked together using BASH scripts, so to use these script having BASH
+installed is a must.
+
 ## how to use
 
 The `build_stuff.sh` script downloads and builds the cross-compiler and it's
