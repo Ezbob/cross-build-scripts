@@ -254,7 +254,3 @@ fi
 
 cd $CWD
 
-echo "Packing toolchain..."
-tar -I 'xz -T4' -c -f ${TARGET_ARCH}.tar.xz -C ${PREFIX}/ . || die "Could not pack toolchain to ${TARGET_ARCH}"
-echo "done."
-
