@@ -23,5 +23,5 @@ GCC_OPTS="--disable-multilib --enable-lto --enable-languages=c,c++ --with-arch=a
 # glibc configure options
 GLIBC_OPTS="--disable-multilib"
 
-GLIBC_CFLAGS="-O2 -Wno-error=builtin-declaration-mismatch"
+GLIBC_CFLAGS="-Wno-error=builtin-declaration-mismatch"
 

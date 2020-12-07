@@ -1,9 +1,9 @@
-binutils http://ftpmirror.gnu.org/binutils/binutils-2.31.tar.gz
-gcc      http://ftpmirror.gnu.org/gcc/gcc-10.1.0/gcc-10.1.0.tar.gz
+binutils https://ftpmirror.gnu.org/binutils/binutils-2.35.1.tar.gz
+gcc      https://ftpmirror.gnu.org/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz
 linux    https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.10.tar.xz
-glibc    http://ftpmirror.gnu.org/glibc/glibc-2.31.tar.xz
-mpfr     http://ftpmirror.gnu.org/mpfr/mpfr-4.0.2.tar.gz
-gmp      http://ftpmirror.gnu.org/gmp/gmp-6.2.0.tar.xz
-mpc      http://ftpmirror.gnu.org/mpc/mpc-1.1.0.tar.gz
+glibc    https://ftpmirror.gnu.org/glibc/glibc-2.31.tar.xz
+mpfr     https://ftpmirror.gnu.org/mpfr/mpfr-4.0.2.tar.gz
+gmp      https://ftpmirror.gnu.org/gmp/gmp-6.2.0.tar.xz
+mpc      https://ftpmirror.gnu.org/mpc/mpc-1.1.0.tar.gz
 isl      ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.18.tar.bz2
 cloog    ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz

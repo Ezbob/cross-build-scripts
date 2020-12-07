@@ -43,7 +43,7 @@ mkdir -p ${PREFIX}
 
 IMAGE_PREFIX=${PREFIX}/${TARGET_ARCH}
 BIN_PREFIX=${PREFIX}/bin
-SYSROOT_DIR=sysroot
+SYSROOT_DIR=
 SYSROOT_PREFIX=${IMAGE_PREFIX}/${SYSROOT_DIR}
 
 PATH=${BIN_PREFIX}:$PATH
@@ -214,7 +214,7 @@ echo "Installing standard C library"
 # Finally we build the glibc fully
 if is_stage_not_built "std-c-lib"; then
     print_title "Glibc"
-    make -C build-glibc CFLAGS="${GLIBC_CFLAGS}" -j4 || die "Could not build glibc" 
+    make -C build-glibc CFLAGS="-O2 ${GLIBC_CFLAGS}" -j4 || die "Could not build glibc" 
     make -C build-glibc install DESTDIR=${SYSROOT_PREFIX} || die "Could not install standard C library"
     echo "Installed standard C library"
     commit_stage "std-c-lib"
@@ -253,3 +253,8 @@ else
 fi
 
 cd $CWD
+
+echo "Packing toolchain..."
+tar -I 'xz -T4' -c -f ${TARGET_ARCH}.tar.xz -C ${PREFIX}/ . || die "Could not pack toolchain to ${TARGET_ARCH}"
+echo "done."
+
