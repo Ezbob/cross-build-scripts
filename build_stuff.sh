@@ -42,9 +42,7 @@ CWD=$(pwd)
 
 . variables
 
-TOOLS_FILE=${TOOLS_FILE:-tools}
-
-[ ! -f ${TOOLS_FILE} ] && die "TOOLS_FILE file missing" 
+[ -z "${TOOLS_FILE}" ] && die "TOOLS_FILE file missing" 
 
 TOOLS_FILE=$(realpath ${TOOLS_FILE})
 

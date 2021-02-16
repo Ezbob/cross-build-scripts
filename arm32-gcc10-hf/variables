@@ -11,6 +11,9 @@ LINUX_ARCH=arm
 # Where stuff is downloaded and built from
 WORK_DIR=workdir
 
+# Tools file where dependencies are described
+TOOLS_FILE=tools
+
 # binutils configure options
 BINUTILS_OPTS="--disable-multilib --enable-lto --disable-libquadmath --with-static-standard-libraries"
 
