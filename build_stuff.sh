@@ -1,4 +1,6 @@
 #!/bin/bash
+# Central build script for downloading and compiling a GCC cross-compiler 
+# for various platforms.
 
 die() {
     echo "Error: $1"
