@@ -2,6 +2,7 @@
 # Central build script for downloading and compiling a GCC cross-compiler 
 # for various platforms. Mainly tested with ARM and AARCH64 systems.
 
+# Exit function that prints a message before exiting
 die() {
     echo "Error: $1"
     exit 1
@@ -49,19 +50,6 @@ SYSROOT_DIR=
 SYSROOT_PREFIX=${IMAGE_PREFIX}/${SYSROOT_DIR}
 
 PATH=${BIN_PREFIX}:$PATH
-
-# cross environment script for when you need it afterwards
-ENV_SCRIPT="cross_environment.source"
-
-echo "Creating environment script ${ENV_SCRIPT}.."
-
-echo 'export PATH='${BIN_PREFIX}':$PATH' > ${ENV_SCRIPT}
-echo 'export CROSS_PREFIX='${PREFIX} >> ${ENV_SCRIPT}
-echo 'export CROSS_ARCH='${TARGET_ARCH} >> ${ENV_SCRIPT}
-
-# end of cross environment script
-
-echo "Created environment script ${ENV_SCRIPT}."
 
 mkdir -p ${WORK_DIR}
 cd ${WORK_DIR}
