@@ -1,6 +1,6 @@
 #!/bin/bash
 # Central build script for downloading and compiling a GCC cross-compiler 
-# for various platforms.
+# for various platforms. Mainly tested with ARM and AARCH64 systems.
 
 die() {
     echo "Error: $1"
