@@ -1,6 +1,6 @@
 
 # Install prefix
-PREFIX=$(pwd)/cross-armv7a
+PREFIX=cross-armv7a
 
 # GNU arch name
 TARGET_ARCH=arm-linux-gnueabihf
@@ -10,9 +10,6 @@ LINUX_ARCH=arm
 
 # Where stuff is downloaded and built from
 WORK_DIR=workdir
-
-# Tools files, lists all the packages needed
-TOOLS_FILE=$(pwd)/tools
 
 # binutils configure options
 BINUTILS_OPTS="--disable-multilib --enable-lto --disable-libquadmath --with-static-standard-libraries"

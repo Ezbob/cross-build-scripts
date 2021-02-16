@@ -8,6 +8,9 @@ die() {
     exit 1
 }
 
+# Check if stage is not built
+# Used to skip already build stages by checking the .buildstages file
+# created by commiting a stage
 is_stage_not_built() {
     local stage_name=$1
     grep -q "$stage_name" .buildstages
@@ -19,12 +22,15 @@ is_stage_not_built() {
     fi
 }
 
+# Commit a stage
+# Stage will be recorded in the .buildstages file
 commit_stage() {
     local stage_name=$1
     sed -i "/$stage_name/d" .buildstages
     echo "$stage_name" >> .buildstages
 }
 
+# Change shell title
 print_title() {
     local title=$1
     echo -e '\033]2;'$title'\007'
@@ -36,14 +42,17 @@ CWD=$(pwd)
 
 . variables
 
+TOOLS_FILE=${TOOLS_FILE:-tools}
+
+[ ! -f ${TOOLS_FILE} ] && die "TOOLS_FILE file missing" 
+
+TOOLS_FILE=$(realpath ${TOOLS_FILE})
+
 [ -z "${PREFIX}" ] && die "Empty prefix"
 
-[ ! -f ${TOOLS_FILE} ] && die "'tools' file missing" 
+mkdir -p ${PREFIX} || die "Could not create PREFIX directory"
 
-mkdir -p ${PREFIX}
-
-[ ! -d "${PREFIX}" ] && die "Prefix is not a directory"
-
+PREFIX=$(realpath $PREFIX)
 IMAGE_PREFIX=${PREFIX}/${TARGET_ARCH}
 BIN_PREFIX=${PREFIX}/bin
 SYSROOT_DIR=
