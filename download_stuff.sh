@@ -21,9 +21,14 @@ CWD=$(pwd)
 TOOLS_FILE=$(realpath ${TOOLS_FILE})
 CACHE_DIR=$(realpath ${CACHE_DIR})
 
-mkdir -p "${CACHE_DIR}"
+[ ! -f "${TOOLS_FILE}" ] && die "TOOLS_FILE is not a file"
+
+[ -z "${CACHE_DIR}" ] && die "CACHE_DIR variable is not defined"
+
+mkdir -p "${CACHE_DIR}" || die "Could not create cache directory"
 cd "${CACHE_DIR}"
 
+echo "Downloading dependencies from TOOLS_FILE..."
 # This stage downloads the dependencies found in the 'tools' file
 touch .downloaded
 while read line; do
@@ -35,9 +40,11 @@ while read line; do
         echo "$name is already downloaded"
         continue
     else
-        wget $url || die "Could not download $package from $url"
+        wget -q --show-progress $url || die "Could not download $package from $url"
         echo "$name $package" >> .downloaded
     fi
 done < ${TOOLS_FILE}
+
+echo "Done."
 
 cd $CWD
