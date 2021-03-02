@@ -24,5 +24,5 @@ echo "done."
 
 if [ "$DESTDIR" != "$CWD" ]; then
     echo "Moving package to ${DESTDIR}..."
-    mv ${TARGET_ARCH}.tar.xz ${DESTDIR}/ 
+    mkdir -p ${DESTDIR} && mv ${TARGET_ARCH}.tar.xz ${DESTDIR}/ 
 fi
