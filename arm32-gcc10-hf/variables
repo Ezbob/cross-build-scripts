@@ -1,6 +1,6 @@
 
 # Install prefix
-PREFIX=cross-armv7a
+PREFIX=cross-installed
 
 # GNU arch name
 TARGET_ARCH=arm-linux-gnueabihf
@@ -8,7 +8,10 @@ TARGET_ARCH=arm-linux-gnueabihf
 # linux arch name
 LINUX_ARCH=arm
 
-# Where stuff is downloaded and built from
+# Where stuff is downloaded
+CACHE_DIR=cache
+
+# Where built from
 WORK_DIR=workdir
 
 # Tools file where dependencies are described

@@ -1,6 +1,6 @@
 
 # Install prefix
-PREFIX=$(pwd)/cross-armv7a
+PREFIX=crossbuild
 
 # GNU arch name
 TARGET_ARCH=arm-linux-gnueabi
@@ -8,11 +8,14 @@ TARGET_ARCH=arm-linux-gnueabi
 # linux arch name
 LINUX_ARCH=arm
 
-# Where stuff is downloaded and built from
+# Where stuff is built from
 WORK_DIR=workdir
 
+# Where stuff is downloaded 
+CACHE_DIR=cache
+
 # Tools files, lists all the packages needed
-TOOLS_FILE=$(pwd)/tools
+TOOLS_FILE=tools
 
 # binutils configure options
 BINUTILS_OPTS="--disable-multilib"

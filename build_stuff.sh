@@ -44,8 +44,6 @@ CWD=$(pwd)
 
 [ -z "${TOOLS_FILE}" ] && die "TOOLS_FILE file missing" 
 
-TOOLS_FILE=$(realpath ${TOOLS_FILE})
-
 [ -z "${PREFIX}" ] && die "Empty prefix"
 
 mkdir -p ${PREFIX} || die "Could not create PREFIX directory"
@@ -55,35 +53,32 @@ IMAGE_PREFIX=${PREFIX}/${TARGET_ARCH}
 BIN_PREFIX=${PREFIX}/bin
 SYSROOT_DIR=
 SYSROOT_PREFIX=${IMAGE_PREFIX}/${SYSROOT_DIR}
-
+CACHE_DIR=$(realpath $CACHE_DIR)
 PATH=${BIN_PREFIX}:$PATH
 
 mkdir -p ${WORK_DIR}
 cd ${WORK_DIR}
+touch .buildstages
 
-# This stage downloads the dependencies found in the 'tools' file
-touch .downloaded
-while read line; do
-    name=$(echo $line | tr -s ' ' | cut -d ' ' -f 1) 
-    url=$(echo $line | tr -s ' ' | cut -d ' ' -f 2)
-    package=${url##*/}
+echo "Unpacking cache..."
+if is_stage_not_built "unpacking"; then
+    print_title "Unpacking packages"
+    
+    while read line; do
+        name=$(echo $line | tr -s ' ' | cut -d ' ' -f 1) 
+        package=$(echo $line | tr -s ' ' | cut -d ' ' -f 2)
 
-    if grep -q "$name" .downloaded; then
-        echo "$name is already downloaded"
-        continue
-    else
-        wget $url
-        [ "$?" != 0 ] && die "Could not download $package from $url"
-        echo "Unpacking $package..."
-        tar -xf $package
-        echo "Done."
-        echo $name >> .downloaded
-        rm -f $package
-    fi
-done < ${TOOLS_FILE}
+        echo "Unpacking $name..."
+        
+        tar -x -f ${CACHE_DIR}/${package}
+    done < ${CACHE_DIR}/.downloaded
+
+    commit_stage "unpacking"
+else
+    echo "Already unpacked cache"
+fi
 
 echo "Running build stages..."
-touch .buildstages
 
 # This stage applies any patch scripts that are present in the current
 # working directory
