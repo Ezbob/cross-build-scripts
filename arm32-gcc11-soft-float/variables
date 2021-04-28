@@ -1,0 +1,27 @@
+
+# Install prefix
+PREFIX=$(pwd)/cross-armv7a
+
+# GNU arch name
+TARGET_ARCH=arm-linux-gnueabi
+
+# linux arch name
+LINUX_ARCH=arm
+
+# Where stuff is downloaded and built from
+WORK_DIR=workdir
+
+# Tools files, lists all the packages needed
+TOOLS_FILE=$(pwd)/tools
+
+# binutils configure options
+BINUTILS_OPTS="--disable-multilib"
+
+# gcc configure options
+GCC_OPTS="--disable-multilib --enable-languages=c,c++ --with-arch=armv7-a+nosimd --with-float=soft"
+
+# glibc configure options
+GLIBC_OPTS="--disable-multilib"
+
+GLIBC_CFLAGS="-O2 -Wno-error -Wno-error=builtin-declaration-mismatch"
+
