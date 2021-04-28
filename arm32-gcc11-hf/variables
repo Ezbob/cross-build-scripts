@@ -1,0 +1,27 @@
+
+# Install prefix
+PREFIX=cross-armv7a
+
+# GNU arch name
+TARGET_ARCH=arm-linux-gnueabihf
+
+# linux arch name
+LINUX_ARCH=arm
+
+# Where stuff is downloaded and built from
+WORK_DIR=workdir
+
+# Tools file where dependencies are described
+TOOLS_FILE=tools
+
+# binutils configure options
+BINUTILS_OPTS="--disable-multilib --enable-lto --disable-libquadmath --with-static-standard-libraries"
+
+# gcc configure options
+GCC_OPTS="--disable-multilib --enable-lto --enable-languages=c,c++ --with-arch=armv7-a+nosimd+vfpv4-d16 --with-float=hard --with-fpu=vfpv4-d16"
+
+# glibc configure options
+GLIBC_OPTS="--disable-multilib"
+
+GLIBC_CFLAGS="-Wno-error=builtin-declaration-mismatch"
+
