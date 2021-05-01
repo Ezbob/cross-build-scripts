@@ -6,7 +6,7 @@ glibc, gnu binutils, and gcc.
 It's all hacked together using BASH scripts, so to use these script having BASH
 installed is a must.
 
-## how to use
+## How to use
 
 The `build_stuff.sh` script downloads and builds the cross-compiler and it's
 dependencies. 
@@ -26,7 +26,7 @@ cd arm32-gcc10-soft-float/
 ```
 This should start the download and build process.
 
-## configuring the builds
+## Configuring the builds
 
 The `build_stuff.sh` script relies on two configuration files, `variables` 
 and `tools` to build toolchains.
@@ -39,9 +39,38 @@ The `tools` contains a listing of the URL, indexed by component names, where
 the different components can be downloaded, as well as their versions 
 (this is stated in their names).
 
-Other than the previously mentioned configuration files, patch scripts can 
-also be automatically applied by creating executable bash scripts those 
-names matches the `patch-*.sh` glob in the same directory as the `variables` 
-and `tools` files. These patch script are applied just after the toolchain
-dependencies are downloaded, and their working directories are set to the 
-directory where the dependencies are downloaded.
+Other than the previously mentioned configuration files, patch scripts can also be 
+automatically applied by creating executable bash scripts those names matches the 
+`patch-*.sh` glob in the same directory as the `variables` and `tools` files. These 
+patch scripts are applied just after the toolchain dependencies are downloaded, and 
+their working directories are set to the directory where the dependencies are downloaded.
+
+
+## Using Docker
+
+Scripts and a dockerfile has been provided to create docker images and containers
+which can build the toolchains. The main advantages of building in a docker container
+is that dependencies are explicitly specified by the Dockerfile, and the dependency
+versions can be specified by choosing the right OS version in the FROM clause of the
+dockerfile.
+
+Building the docker image can be done by running the script `create_docker_image.sh`:
+```bash
+./create_docker_image.sh
+```
+
+Once the image is built, the `build_with_docker.sh` can be used to build a toolchain by
+specifying one of the toolchain folder as the argument to the script.
+
+For an example building the `arm32-gcc10-soft-float` toolchain can be done like this:
+```bash
+./build_with_docker arm32-gcc10-soft-float
+```
+
+The docker container will then clean the existing toolchain files in the 
+`arm32-gcc-soft-float` directory, start the build process, and finally pack the
+completed toolchain. The packed toolchain will be available in the `arm32-gcc-soft-float`
+directory.
+
+Note: The user id and group of the built toolchain files will be set to the internal user
+defined by the dockerfile.
