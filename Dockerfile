@@ -8,14 +8,14 @@ RUN apt-get install -y gcc g++ autoconf automake make bison gawk flex tar xz-uti
 RUN groupadd builder
 RUN useradd -G builder -s /bin/bash bob
 
-RUN mkdir -p /opt/crossgcc/
-RUN chown -R bob:builder /opt/crossgcc
+RUN mkdir -p /opt/crossgcc/build
+RUN chown -R bob:builder /opt/crossgcc/
 
-ENV GCC_BUILD_DIR=/opt/crossgcc
+ENV GCC_BUILD_DIR=/opt/crossgcc/build
 
-WORKDIR /opt/crossgcc
+WORKDIR /opt/crossgcc/build
 USER bob
 
-COPY *.sh /opt/crossgcc/
+COPY *.sh /opt/crossgcc/lib/
 
-ENTRYPOINT ./build_stuff.sh && ./pack_toolchain.sh
+ENTRYPOINT ../lib/clean_all.sh && ../lib/build_stuff.sh && ../lib/pack_toolchain.sh
