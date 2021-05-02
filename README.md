@@ -11,9 +11,9 @@ installed is a must.
 The `build_stuff.sh` script downloads and builds the cross-compiler and it's
 dependencies. 
 
-This repo provides two toolchains that should compile out-of-the-box, namely
-the `arm32-gcc10-soft-float` which builds an 32-bit ARM C and C++
-toolchain, and the `aarch64-gcc10` 64-bit ARM C and C++ toolchain.
+This repo provides various toolchains that should compile out-of-the-box. One of
+these toolchains namely the `arm32-gcc10-soft-float` which builds an 32-bit ARM C 
+and C++ toolchain, and the `aarch64-gcc10` 64-bit ARM C and C++ toolchain.
 
 To build `arm32-gcc10-soft-float` simply goto the `arm32-gcc10-soft-float` 
 directory:
