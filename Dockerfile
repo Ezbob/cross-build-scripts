@@ -1,6 +1,6 @@
 FROM debian:stretch-slim
 
-RUN export DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
 RUN apt-get install -y gcc g++ autoconf automake make bison gawk flex tar xz-utils gzip wget bzip2 texinfo python3
